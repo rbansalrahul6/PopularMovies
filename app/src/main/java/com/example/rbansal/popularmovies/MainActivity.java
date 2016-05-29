@@ -46,6 +46,15 @@ public class MainActivity extends AppCompatActivity {
         gridView.setAdapter(mPicassoAdapter);
 
     }
+    private void updateMovies() {
+        FetchMovie movieTask = new FetchMovie();
+        movieTask.execute("top_rated");
+    }
+    @Override
+    public void onStart() {
+        super.onStart();
+        updateMovies();
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -62,9 +71,7 @@ public class MainActivity extends AppCompatActivity {
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_refresh) {
-            FetchMovie movie = new FetchMovie();
-            movie.execute("top_rated");
+        if (id == R.id.action_settings) {
             return true;
         }
 
