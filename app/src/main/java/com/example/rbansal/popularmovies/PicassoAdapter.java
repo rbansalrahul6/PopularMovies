@@ -24,6 +24,13 @@ public class PicassoAdapter extends BaseAdapter {
         mMovies = movies;
         mInflater = LayoutInflater.from(context);    //check
     }
+    public void clear() {
+        mMovies.clear();
+    }
+    public void add(Movie m) {
+        mMovies.add(m);
+        notifyDataSetChanged();
+    }
 
     @Override
     public int getCount() {

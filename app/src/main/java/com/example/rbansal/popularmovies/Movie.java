@@ -5,8 +5,8 @@ package com.example.rbansal.popularmovies;
  */
 //movie class
 public class Movie {
-    public final String imgUrl;
-    public final String name;
+    public  String imgUrl;
+    public  String name;
 
     Movie(String imgUrl, String name) {
         this.imgUrl = imgUrl;

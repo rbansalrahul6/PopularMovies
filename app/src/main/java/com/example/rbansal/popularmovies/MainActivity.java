@@ -21,19 +21,11 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Arrays;
 
 public class MainActivity extends AppCompatActivity {
-    //fake data
-    Movie[] Movies = new Movie[] {
-            new Movie("http://image.tmdb.org/t/p/w185/zSouWWrySXshPCT4t3UKCQGayyo.jpg","X-MEN"),
-            new Movie("http://image.tmdb.org/t/p/w185/rDT86hJCxnoOs4ARjrCiRej7pOi.jpg","CIVIL WAR"),
-            new Movie("http://image.tmdb.org/t/p/w185/5TQ6YDmymBpnF005OyoB7ohZps9.jpg","CAPTAIN AMERICA"),
-            new Movie("http://image.tmdb.org/t/p/w185/9j2AmDhZvdwMyYKpqe4CtBkN1Tw.jpg","LONDON HAS FALLEN"),
-            new Movie("http://image.tmdb.org/t/p/w185/kqjL17yufvn9OVLyXYpvtyrFfak.jpg","Mad Max Fury Road"),
-            new Movie("http://image.tmdb.org/t/p/w185/vdK1f9kpY5QEwrAiXs9R7PlerNC.jpg","Concussion")
-    };
-    ArrayList<Movie> myMovies = new ArrayList<Movie>(Arrays.asList(Movies));
+    //declare adapter globally so that it is sccessible to FetchWeatherTask
+    private PicassoAdapter mPicassoAdapter;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -50,7 +42,8 @@ public class MainActivity extends AppCompatActivity {
             }
         });*/
         GridView gridView = (GridView) findViewById(R.id.grid_view);
-        gridView.setAdapter(new PicassoAdapter(this, myMovies));
+        mPicassoAdapter = new PicassoAdapter(this,new ArrayList<Movie>());
+        gridView.setAdapter(mPicassoAdapter);
 
     }
 
@@ -82,6 +75,13 @@ public class MainActivity extends AppCompatActivity {
 
     public class FetchMovie extends AsyncTask<String, Void, Movie[]> {
         private final String LOG_TAG = FetchMovie.class.getSimpleName();
+        //formatting movie data
+        private Movie formatMovieData(Movie m) {
+            final String BASE_POSTER_PATH = "http://image.tmdb.org/t/p/";
+            final String POSTER_SIZE = "w185";
+            m.imgUrl = BASE_POSTER_PATH + POSTER_SIZE + m.imgUrl;
+            return m;
+        }
         //method for extracting data from json string
         private Movie[] getMovieDataFromJson(String jsonStr)
         throws JSONException {
@@ -98,16 +98,15 @@ public class MainActivity extends AppCompatActivity {
 
             for(int i=0;i<resultArray.length();i++) {
                 JSONObject movie = resultArray.getJSONObject(i);
-                resultMovies[i] = new Movie(movie.getString(POSTER_PATH), movie.getString(TITLE));
+                resultMovies[i] = formatMovieData(new Movie(movie.getString(POSTER_PATH), movie.getString(TITLE)));
             }
-            for(Movie m : resultMovies) {
-                Log.v(LOG_TAG, "TITLE: "+m.name+" Path: "+m.imgUrl+"\n");
-            }
+
             return  resultMovies;
         }
 
         @Override
         protected Movie[] doInBackground(String... params) {
+            //checking for parameteres
             if(params.length == 0)
             {
                 return  null;
@@ -190,6 +189,16 @@ public class MainActivity extends AppCompatActivity {
             }
             //this will happen only if there is an error ehile parsing data
             return null;
+        }
+
+        @Override
+        protected void onPostExecute(Movie[] result) {
+            if(result!=null) {
+                mPicassoAdapter.clear();
+                for(Movie temp : result) {
+                    mPicassoAdapter.add(temp);
+                }
+            }
         }
     }
 
