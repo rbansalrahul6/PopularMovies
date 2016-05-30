@@ -9,6 +9,8 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.GridView;
 import android.widget.Spinner;
@@ -50,28 +52,49 @@ public class MainActivity extends AppCompatActivity {
         gridView.setAdapter(mPicassoAdapter);
 
     }
-    private void updateMovies() {
+    private String getValue(String key) {
+        String res;
+        if(key.equals("POPULAR")) {
+            res = "popular";
+        }
+        else {
+            res = "top_rated";
+        }
+        return res;
+    }
+    private void updateMovies(String key) {
         FetchMovie movieTask = new FetchMovie();
-        movieTask.execute("top_rated");
+        movieTask.execute(getValue(key));
     }
     @Override
     public void onStart() {
         super.onStart();
-        updateMovies();
+        updateMovies("TOP RATED");
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_main, menu);
         MenuItem item = menu.findItem(R.id.spinner);
-        Spinner spinner = (Spinner) MenuItemCompat.getActionView(item);
-
+        final Spinner spinner = (Spinner) MenuItemCompat.getActionView(item);
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
                 R.array.sort, android.R.layout.simple_spinner_item);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-
         spinner.setAdapter(adapter);
+        //binding a listener
+        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
 
+            @Override
+            public void onItemSelected(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
+
+                String catg = spinner.getSelectedItem().toString();
+                updateMovies(catg);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> arg0) {}
+
+        });
         return true;
     }
 

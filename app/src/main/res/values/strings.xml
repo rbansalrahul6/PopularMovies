@@ -2,7 +2,7 @@
     <string name="app_name">Popular Movies</string>
     <string name="action_settings">Settings</string>
     <string-array name="sort">
-        <item>Popular</item>
-        <item>Top Rated</item>
+        <item>POPULAR</item>
+        <item>TOP RATED</item>
     </string-array>
 </resources>
