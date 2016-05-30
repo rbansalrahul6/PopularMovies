@@ -66,17 +66,19 @@ public class MainActivity extends AppCompatActivity {
         FetchMovie movieTask = new FetchMovie();
         movieTask.execute(getValue(key));
     }
-    @Override
+   /* @Override
     public void onStart() {
         super.onStart();
         updateMovies("TOP RATED");
-    }
+    }*/
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_main, menu);
         MenuItem item = menu.findItem(R.id.spinner);
         final Spinner spinner = (Spinner) MenuItemCompat.getActionView(item);
+        //spinner.setBackgroundColor(Color.parseColor("#FFFFFF"));
+        spinner.setPopupBackgroundResource(R.drawable.spinner);
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
                 R.array.sort, android.R.layout.simple_spinner_item);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
